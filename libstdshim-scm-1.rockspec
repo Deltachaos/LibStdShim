@@ -3,7 +3,7 @@ package = "libstdshim"
 version = "scm-1"
 
 source = {
-  url = "git+https://github.com/Deltachaos/wowstdshim.git",
+  url = "git+https://github.com/Deltachaos/LibStdShim.git",
 }
 
 description = {
@@ -13,7 +13,7 @@ description = {
     helpers that approximate the Lua 5.1 standard library inside WoW's sandbox,
     using a virtual filesystem and LibStub when available.
   ]],
-  homepage = "https://github.com/Deltachaos/wowstdshim",
+  homepage = "https://github.com/Deltachaos/LibStdShim",
   license = "MIT",
 }
 
