@@ -39,6 +39,7 @@ build = {
   },
   copy_directories = {
     "tests",
+    "meta",
   },
 }
 

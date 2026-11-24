@@ -6,13 +6,13 @@ WoW's Lua environment is missing or restricting parts of the standard library (`
 
 ## Install
 
-Copy this repository into your addon (or a libs folder) and load `lib.xml` from your TOC:
+Copy this repository into your addon (or a libs folder) and load `meta/lib.xml` from your TOC:
 
 ```xml
-<Include file="LibStdShim\lib.xml"/>
+<Include file="LibStdShim\meta\lib.xml"/>
 ```
 
-`lib.xml` loads `LibStdShim.lua` and the modules under `LibStdShim/`.
+`meta/lib.xml` loads `LibStdShim.lua` and the modules under `LibStdShim/`.
 
 ## Usage
 
