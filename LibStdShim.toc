@@ -1,0 +1,8 @@
+## Interface: 120105, 50504, 11509
+## Title: LibStdShim
+## Notes: Lua 5.1 standard-library shims for World of Warcraft
+## Author: Maximilian Ruta
+## Version: @project-version@
+## OptionalDeps: LibStub
+
+lib.xml
