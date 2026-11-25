@@ -78,7 +78,7 @@ local Std
 
 -- When required as a module (e.g. busted), companions are pulled in here.
 -- In WoW, lib.xml loads them as separate Scripts; each calls LibStdShim.embed.
-local loaded_as_module = select("#", ...) >= 1 and type((...)) == "string"
+local loaded_as_module = require ~= nil and select("#", ...) >= 1 and type((...)) == "string"
 
 if not libstub then
 	Std = {}
