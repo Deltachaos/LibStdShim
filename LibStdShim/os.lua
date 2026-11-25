@@ -50,9 +50,70 @@ return LibStdShim.embed("os", function(Std)
 		return _format("/tmp/lua_%d", tmp_seq)
 	end
 
-	os.execute = unavailable("os.execute")
+	local CATEGORIES = {
+		all = true,
+		collate = true,
+		ctype = true,
+		monetary = true,
+		numeric = true,
+		time = true,
+	}
+
+	local function wow_locale()
+		local get = _G.GetLocale or _G.GetOSLocale
+		if type(get) == "function" then
+			return get()
+		end
+		return nil
+	end
+
+	local function to_posix(code)
+		if type(code) ~= "string" then
+			return nil
+		end
+		if #code == 4 then
+			local lang = string.lower(string.sub(code, 1, 2))
+			local region = string.upper(string.sub(code, 3, 4))
+			if string.match(lang, "^[a-z][a-z]$") and string.match(region, "^[A-Z][A-Z]$") then
+				return lang .. "_" .. region
+			end
+		end
+		return code
+	end
+
+	local function requested_posix(locale)
+		local base = string.match(locale, "^([^%.]+)") or locale
+		if #base == 4 then
+			return to_posix(base)
+		end
+		local lang, region = string.match(base, "^([A-Za-z][A-Za-z])_([A-Za-z][A-Za-z])$")
+		if lang then
+			return string.lower(lang) .. "_" .. string.upper(region)
+		end
+		return base
+	end
+
+	function os.setlocale(locale, category)
+		category = category or "all"
+		if not CATEGORIES[category] then
+			return nil
+		end
+		local current = wow_locale()
+		if current == nil then
+			return nil
+		end
+		local posix = to_posix(current)
+		if locale == nil then
+			return posix
+		end
+		if requested_posix(tostring(locale)) == posix then
+			return posix
+		end
+		return nil
+	end
+
+	os.execute = Std.unshimmed
 	os.exit = unavailable("os.exit")
-	os.setlocale = unavailable("os.setlocale")
 	setmetatable(os, {
 		__index = function(_, k)
 			return unavailable("os." .. tostring(k))

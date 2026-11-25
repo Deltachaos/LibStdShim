@@ -5,9 +5,27 @@ return LibStdShim.embed("load", function(Std)
 
 	local M = {}
 
+	local function read_all(reader)
+		local parts = {}
+		while true do
+			local piece = reader()
+			if piece == nil or piece == "" then
+				break
+			end
+			if type(piece) ~= "string" then
+				error("reader function must return a string", 3)
+			end
+			parts[#parts + 1] = piece
+		end
+		return table.concat(parts)
+	end
+
 	function M.load(chunk, chunkname, mode, env)
-		if type(chunk) ~= "string" then
-			error("LibStdShim: load from a reader function is not available in WoW", 2)
+		local t = type(chunk)
+		if t == "function" then
+			chunk = read_all(chunk)
+		elseif t ~= "string" then
+			error("bad argument #1 to 'load' (function expected, got " .. t .. ")", 2)
 		end
 		if type(mode) == "string" and string.find(mode, "b", 1, true) and not string.find(mode, "t", 1, true) then
 			error("LibStdShim: binary load is not available in WoW", 2)

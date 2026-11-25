@@ -27,22 +27,42 @@ if not debugprofilestop then
 end
 
 if not debugstack then
-	function debugstack(level)
-		level = (level or 1) + 1
+	function debugstack(a, b, count1)
+		local thread, start
+		if type(a) == "thread" then
+			thread, start = a, b
+		else
+			start = a
+		end
+		start = start or 1
+		count1 = count1 or 12
 		local parts = {}
-		local i = level
-		while true do
-			local info = debug.getinfo(i, "Sl")
+		local i = start
+		local n = 0
+		while n < count1 do
+			local info
+			if thread then
+				info = debug.getinfo(thread, i, "Sln")
+			else
+				info = debug.getinfo(i + 1, "Sln")
+			end
 			if not info then
 				break
 			end
-			parts[#parts + 1] = string.format("%s:%d", info.short_src or "?", info.currentline or 0)
-			i = i + 1
-			if i > level + 20 then
-				break
+			local loc = string.format("%s:%d", info.short_src or "?", info.currentline or 0)
+			if info.name then
+				parts[#parts + 1] = string.format("%s: in function `%s'", loc, info.name)
+			elseif info.what == "main" then
+				parts[#parts + 1] = loc .. ": in main chunk"
+			elseif info.what == "C" then
+				parts[#parts + 1] = "[C]: ?"
+			else
+				parts[#parts + 1] = loc
 			end
+			i = i + 1
+			n = n + 1
 		end
-		return table.concat(parts, "\n")
+		return table.concat(parts, "\n") .. "\n"
 	end
 end
 

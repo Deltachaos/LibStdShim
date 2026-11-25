@@ -6,6 +6,13 @@ describe("Std.os", function()
 	before_each(function()
 		Std = helper.fresh_std()
 		helper.clear_fs(Std)
+		_G.GetLocale = nil
+		_G.GetOSLocale = nil
+	end)
+
+	after_each(function()
+		_G.GetLocale = nil
+		_G.GetOSLocale = nil
 	end)
 
 	it("computes difftime", function()
@@ -42,11 +49,64 @@ describe("Std.os", function()
 		assert.not_equals(a, b)
 	end)
 
-	it("marks execute as unavailable", function()
+	it("setlocale returns nil without GetLocale", function()
+		_G.GetLocale = nil
+		_G.GetOSLocale = nil
+		assert.is_nil(Std.os.setlocale())
+	end)
+
+	it("setlocale queries GetLocale as a POSIX name", function()
+		_G.GetLocale = function()
+			return "enUS"
+		end
+		assert.equals("en_US", Std.os.setlocale())
+		assert.equals("en_US", Std.os.setlocale(nil, "time"))
+		assert.equals("en_US", Std.os.setlocale("en_US"))
+		assert.equals("en_US", Std.os.setlocale("enUS"))
+		assert.equals("en_US", Std.os.setlocale("en_US.UTF-8"))
+		assert.equals("en_US", Std.os.setlocale("en_US.utf8"))
+		assert.is_nil(Std.os.setlocale("de_DE"))
+		assert.is_nil(Std.os.setlocale(nil, "nope"))
+		_G.GetLocale = nil
+	end)
+
+	it("setlocale falls back to GetOSLocale", function()
+		_G.GetOSLocale = function()
+			return "deDE"
+		end
+		assert.equals("de_DE", Std.os.setlocale())
+	end)
+
+	it("setlocale leaves a non-four-letter locale unchanged", function()
+		_G.GetLocale = function()
+			return "C"
+		end
+		assert.equals("C", Std.os.setlocale())
+		assert.equals("C", Std.os.setlocale("C"))
+	end)
+
+	it("setlocale converts other Blizzard locale codes", function()
+		_G.GetLocale = function()
+			return "zhCN"
+		end
+		assert.equals("zh_CN", Std.os.setlocale())
+		assert.equals("zh_CN", Std.os.setlocale("zhCN"))
+		_G.GetLocale = function()
+			return "ptBR"
+		end
+		assert.equals("pt_BR", Std.os.setlocale())
+		_G.GetLocale = nil
+	end)
+
+	it("execute returns nil", function()
+		assert.is_nil(Std.os.execute("true"))
+	end)
+
+	it("marks exit as unavailable", function()
 		local ok, err = pcall(function()
-			Std.os.execute("true")
+			Std.os.exit(0)
 		end)
 		assert.is_false(ok)
-		assert.matches("os%.execute is not available in WoW", err)
+		assert.matches("os%.exit is not available in WoW", err)
 	end)
 end)

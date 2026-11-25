@@ -529,7 +529,7 @@ return LibStdShim.embed("io", function(Std)
 		end
 	end
 
-	io.popen = unavailable("io.popen")
+	io.popen = Std.unshimmed
 
 	setmetatable(io, {
 		__index = function(_, k)

@@ -38,11 +38,11 @@ Each module is also available on its own (`require("LibStdShim.io")` and so on).
 
 | Field | Contents |
 | --- | --- |
-| `Std.os` | `time`, `date`, `clock`, `difftime`, `remove`, `rename`, `tmpname`; `execute` / `exit` / `setlocale` raise |
-| `Std.io` | `open`, `read`, `write`, `lines`, `tmpfile`, `stdin` / `stdout` / `stderr` over `Std.fs` |
-| `Std.debug` | `traceback`, `getmetatable`, `setmetatable`; most other `debug.*` functions raise |
+| `Std.os` | `time`, `date`, `clock`, `difftime`, `remove`, `rename`, `tmpname`; `setlocale` queries `GetLocale` as `en_US` (cannot change locale); `execute` returns `nil`; `exit` raises |
+| `Std.io` | `open`, `read`, `write`, `lines`, `tmpfile`, `stdin` / `stdout` / `stderr` over `Std.fs`; `popen` returns `nil` |
+| `Std.debug` | `traceback`, `getinfo` (stack levels via `debugstack`), `getmetatable`, `setmetatable`; value-returning `debug.*` stubs return `nil`; `sethook` / `debug` raise |
 | `Std.bit32` | Lua 5.2 `bit32` built on WoW's `bit` library |
-| `Std.load` / `loadfile` / `dofile` | Text chunks only; `loadfile` and `dofile` read from `Std.fs` |
+| `Std.load` / `loadfile` / `dofile` | Text chunks and reader functions; `loadfile` and `dofile` read from `Std.fs` |
 | `Std.table` | The shared `table` library, plus `pack` / `unpack` when missing |
 
 `stdout` and `stderr` line-buffer into `print`.

@@ -52,6 +52,9 @@ local function init(std)
 			error("LibStdShim: " .. name .. " is not available in WoW", 2)
 		end
 	end
+	function std.unshimmed()
+		return nil
+	end
 end
 
 local function mount(std, libstub)

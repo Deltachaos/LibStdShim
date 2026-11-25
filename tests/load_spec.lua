@@ -21,6 +21,33 @@ describe("Std.load / loadfile / dofile", function()
 		assert.matches("binary load is not available in WoW", err)
 	end)
 
+	it("loads a chunk from a reader function", function()
+		local pieces = { "return ", "1", " + ", "2" }
+		local i = 0
+		local fn = assert(Std.load(function()
+			i = i + 1
+			return pieces[i]
+		end, "reader"))
+		assert.equals(3, fn())
+	end)
+
+	it("stops reading on empty string", function()
+		local fn = assert(Std.load(function()
+			return ""
+		end, "empty"))
+		assert.is_nil(fn())
+	end)
+
+	it("errors when the reader returns a non-string", function()
+		local ok, err = pcall(function()
+			Std.load(function()
+				return 1
+			end)
+		end)
+		assert.is_false(ok)
+		assert.matches("reader function must return a string", err)
+	end)
+
 	it("loadfile reads from the virtual fs", function()
 		Std.fs["script.lua"] = "return 'ok'"
 		local fn = assert(Std.loadfile("script.lua"))
