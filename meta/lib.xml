@@ -6,4 +6,5 @@
   <Script file="../LibStdShim/bit32.lua"/>
   <Script file="../LibStdShim/load.lua"/>
   <Script file="../LibStdShim/table.lua"/>
+  <Script file="../LibStdShim/math.lua"/>
 </Ui>

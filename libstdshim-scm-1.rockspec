@@ -36,6 +36,7 @@ build = {
     ["LibStdShim.bit32"] = "LibStdShim/bit32.lua",
     ["LibStdShim.load"] = "LibStdShim/load.lua",
     ["LibStdShim.table"] = "LibStdShim/table.lua",
+    ["LibStdShim.math"] = "LibStdShim/math.lua",
   },
   copy_directories = {
     "tests",
