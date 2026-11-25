@@ -4,7 +4,7 @@
 ]]
 
 local MAJOR, MINOR = "LibStdShim-1.0", 1
-local MODULES = { "os", "io", "debug", "bit32", "load", "table" }
+local MODULES = { "os", "io", "debug", "bit32", "load", "table", "math" }
 
 local function installed(std, key)
 	if key == "load" then
